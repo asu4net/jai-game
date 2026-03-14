@@ -1,41 +1,50 @@
-main :: () {
-
-    #if OS == .WINDOWS {
-        Windows.SetProcessDPIAware(); // @Note(Windows.SetProcessDPIAware)
-        Windows.timeBeginPeriod(1);   // @Note(Windows.timeBeginPeriod)
+main :: () 
+{
+    #if OS == .WINDOWS 
+    {
+        SetProcessDPIAware(); // @Note(SetProcessDPIAware)
+        timeBeginPeriod(1);   // @Note(timeBeginPeriod)
     }
 
-    #if DEBUG {
+    #if DEBUG
+    {
         defer report_memory_leaks();
     }
 
     window = create_window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, wanted_msaa = MSAA);
-    init_gpu_backend();
+    gpu_backend_init();
 
     // ===================================================
     // @MainLoop:
     // ===================================================
-    while !quit {
+    while !quit 
+    {
         update_window_events();
 
-        for events_this_frame {
-            if it.type == .QUIT {
+        for events_this_frame 
+        {
+            if it.type == .QUIT 
+            {
                 quit = true;
             }
-            if it.type == .KEYBOARD {
-                if it.key_pressed == 0 {
+            if it.type == .KEYBOARD 
+            {
+                if it.key_pressed == 0 
+                {
                     continue;
                 }
-                #if DEBUG {
-                    if it.key_code == .ESCAPE {
+                #if DEBUG 
+                {
+                    if it.key_code == .ESCAPE 
+                    {
                         quit = true;
                     }
                 }
             }
         }
         
-        clear_screen();
-        swap_buffers(window, VSYNC);
+        gpu_clear_screen();
+        gpu_swap_buffers(window, VSYNC);
     }
 }
 
@@ -51,10 +60,13 @@ window: Window_Type;
 // ===================================================
 #load "constants.jai";
 
-#if OPENGL {
+#if OPENGL 
+{
     #load "gpu_backend_gl.jai";
     #load "gpu_calls_gl.jai";
-} else {
+} 
+else 
+{
     #assert(false);
 }
 
@@ -67,20 +79,27 @@ window: Window_Type;
 #import "Input";
 #import "Math";
 
-#if OPENGL {
-    // @Note: Hay que importar esto antes que windows. Por algún motivo.
+#if OPENGL 
+{
+    // @Note: Hay que importar esto antes que  Por algún motivo.
     #import "GL"(DUMP_GL_ERRORS = DEBUG, DEFAULT_MSAA = MSAA);
 }
 
-#if OS == .WINDOWS {
-    Windows :: #import "Windows";
+#if OS == .WINDOWS 
+{
+    #import "Windows";
+}
+else #if OS == .MACOS
+{
+    #import "Objective_C";
+    #import "Objective_C/AppKit";
 }
 
 // ===================================================
 // @Notes:
 // ===================================================
 
-// @Note(Windows.SetProcessDPIAware):
+// @Note(SetProcessDPIAware):
 
 // DPI (Dots Per Inch): Indican cuántos píxeles hay en una
 // pulgada física de pantalla. Windows en monitores con alto
@@ -88,7 +107,7 @@ window: Window_Type;
 // que los elementos con pocos píxeles se continuen viendo.
 // Con esta llamada le comunicas a Windows "I got u, buddy".
 
-// @Note(Windows.timeBeginPeriod):
+// @Note(timeBeginPeriod):
 
 // El Kernel de windows tiene un tick rate con el que actualiza
 // como el cambio de hilos (await/sleep) y la actualización de los

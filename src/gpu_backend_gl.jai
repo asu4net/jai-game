@@ -1,19 +1,43 @@
-init_gpu_backend :: () {
-    gl_create_context(window, OPENGL_MAJOR, OPENGL_MINOR, debug = DEBUG, wanted_msaa = MSAA);
+gpu_backend_init :: () 
+{
+    #if OS == .WINDOWS 
+    {
+        hglrc, hdc, chosen_msaa := wgl_create_context(window, null, OPENGL_MAJOR, OPENGL_MINOR, wanted_msaa=MSAA);
+        gl_context = hglrc;
+    }
+    else #if OS == .MACOS 
+    {
+        gl_context = nsgl_create_context(window, OPENGL_MAJOR, OPENGL_MINOR, wanted_msaa=MSAA);
+    }
+
     gl_load(*gl);
     
-    #if DEBUG {
+    #if DEBUG 
+    {
         gl_enable_debug_output(break_on_error = true);
         DumpGLErrors(tag = "context");
     }
 }
 
-swap_buffers :: (window: Window_Type, vsync := true) {
-    #if OS == .WINDOWS {        
+gpu_swap_buffers :: (window: Window_Type, vsync := true) 
+{
+    #if OS == .WINDOWS 
+    {        
         wglSwapIntervalEXT(xx ifx vsync then 1 else 0);
-        dc := Windows.GetDC(window);
-        Windows.SwapBuffers(dc);
-    } else {
-        //assert(false);
+        dc := GetDC(window);
+        SwapBuffers(dc);
+    } 
+    else #if OS == .MACOS 
+    {
+        NSOpenGLContext.flushBuffer(gl_context);
     }
+}
+
+#if OS == .WINDOWS 
+{
+    gl_context: HGLRC;
+} 
+else #if OS == .MACOS 
+{
+    gl_context: *NSOpenGLContext;
 }
