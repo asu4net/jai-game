@@ -14,6 +14,6 @@ swap_buffers :: (window: Window_Type, vsync := true) {
         dc := Windows.GetDC(window);
         Windows.SwapBuffers(dc);
     } else {
-        assert(false);
+        //assert(false);
     }
 }

@@ -42,7 +42,6 @@
             {
                 "name": "debug-mac",
                 "type": "lldb-dap",
-                "preLaunchTask": "build",
                 "request": "launch",
                 "program": "${workspaceFolder}/.bin/debug/game",
                 "cwd": "${workspaceFolder}/assets",

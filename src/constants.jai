@@ -4,7 +4,7 @@ WINDOW_HEIGHT :: 720;
 MSAA          :: 8; // @Note(MSAA)
 OPENGL        :: true;
 OPENGL_MAJOR  :: 4;
-OPENGL_MINOR  :: 6;
+OPENGL_MINOR  :: 1;
 VSYNC         :: true;
 
 COLOR_WHITE            :: Vector4.{ 1.000, 1.000, 1.000, 1.000 };
