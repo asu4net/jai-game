@@ -62,7 +62,9 @@ setup_workspace :: () {
     options.output_executable_name = params.out;
     
     if params.debug {
-        options.backend = .X64;
+        #if OS != .MACOS {
+            options.backend = .X64;
+        }
         set_optimization(*options, .DEBUG);
     } else {
         options.backend = .LLVM;
