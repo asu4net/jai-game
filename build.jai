@@ -49,8 +49,8 @@ collect_params :: () {
 setup_workspace :: () {
 
     out := ifx  params.debug 
-           then join(params.out_dir, "\\", "debug")
-           else join(params.out_dir, "\\", "release");
+           then join(params.out_dir, "/", "debug")
+           else join(params.out_dir, "/", "release");
 
     make_directory_if_it_does_not_exist(out, true);
 
