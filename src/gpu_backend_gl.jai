@@ -7,7 +7,8 @@ gpu_backend_init :: ()
     }
     else #if OS == .MACOS 
     {
-        gl_context = nsgl_create_context(window, OPENGL_MAJOR, OPENGL_MINOR, wanted_msaa=MSAA);
+        // @Pending: MSAA.
+        gl_context = nsgl_create_context(window, OPENGL_MAJOR, OPENGL_MINOR);
     }
 
     gl_load(*gl);
@@ -29,6 +30,7 @@ gpu_swap_buffers :: (window: Window_Type, vsync := true)
     } 
     else #if OS == .MACOS 
     {
+        // @Pending: V-Sync.
         NSOpenGLContext.flushBuffer(gl_context);
     }
 }
