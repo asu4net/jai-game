@@ -85,14 +85,17 @@ else
     #import "GL"(DUMP_GL_ERRORS = DEBUG, DEFAULT_MSAA = MSAA);
 }
 
-#if OS == .WINDOWS 
+#if OS ==
 {
-    #import "Windows";
-}
-else #if OS == .MACOS
-{
-    #import "Objective_C";
-    #import "Objective_C/AppKit";
+    case .WINDOWS;
+    {
+        #import "Windows";
+    }
+    case .MACOS;
+    {
+        #import "Objective_C";
+        #import "Objective_C/AppKit";
+    }
 }
 
 // ===================================================
