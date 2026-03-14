@@ -1,7 +1,7 @@
 WINDOW_TITLE  :: "Game";
 WINDOW_WIDTH  :: 1280;
 WINDOW_HEIGHT :: 720;
-MSAA          :: 8; // @Footnote1
+MSAA          :: 8; // @Note(MSAA)
 OPENGL        :: true;
 OPENGL_MAJOR  :: 4;
 OPENGL_MINOR  :: 6;
@@ -25,9 +25,11 @@ COLOR_LIGHT_RED        :: Vector4.{ 1.000, 0.300, 0.300, 1.000 };
 COLOR_YELLOW           :: Vector4.{ 1.000, 0.920, 0.016, 1.000 };
 COLOR_ORANGE           :: Vector4.{ 0.970, 0.600, 0.110, 1.000 };
 
-// @Footnotes:
+// ===================================================
+// @Notes:
+// ===================================================
 
-// @Footnote1:
+// @Note(MSAA)
 
 // En videojuegos cuando pintamos triángulos, sobretodo
 // en pixeles que caen en una diagonal vemos que se genera

@@ -1,8 +1,8 @@
 main :: () {
 
     #if OS == .WINDOWS {
-        Windows.SetProcessDPIAware(); // @1Footnote
-        Windows.timeBeginPeriod(1);   // @2Footnote
+        Windows.SetProcessDPIAware(); // @Note(Windows.SetProcessDPIAware)
+        Windows.timeBeginPeriod(1);   // @Note(Windows.timeBeginPeriod)
     }
 
     #if DEBUG {
@@ -77,21 +77,19 @@ window: Window_Type;
 }
 
 // ===================================================
-// @Footnotes:
+// @Notes:
 // ===================================================
 
-// @1Footnote:
+// @Note(Windows.SetProcessDPIAware):
 
-// Windows.SetProcessDPIAware();
 // DPI (Dots Per Inch): Indican cuántos píxeles hay en una
 // pulgada física de pantalla. Windows en monitores con alto
 // DPI puede llegar a escalar automáticamente tu ventana para 
 // que los elementos con pocos píxeles se continuen viendo.
 // Con esta llamada le comunicas a Windows "I got u, buddy".
 
-// @2Footnote:
+// @Note(Windows.timeBeginPeriod):
 
-// Windows.timeBeginPeriod(1);
 // El Kernel de windows tiene un tick rate con el que actualiza
 // como el cambio de hilos (await/sleep) y la actualización de los
 // timers. Con esta llamada especificas que lo haga con una frecuencia
