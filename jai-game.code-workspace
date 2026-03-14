@@ -31,14 +31,22 @@
         "version": "0.2.0",
         "configurations": [
             {
-                "name": "debug",
+                "name": "debug-win",
                 "type": "cppvsdbg",
                 "preLaunchTask": "build",
                 "request": "launch",
                 "program": "${workspaceFolder}/.bin/debug/game.exe",
                 "cwd": "${workspaceFolder}/assets",
                 "stopAtEntry": false
+            },            
+            {
+                "name": "debug-mac",
+                "type": "lldb-dap",
+                "preLaunchTask": "build",
+                "request": "launch",
+                "program": "${workspaceFolder}/.bin/debug/game",
+                "cwd": "${workspaceFolder}/assets",
             }
-        ]
+        ],
     }
 }
