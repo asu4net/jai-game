@@ -1,59 +1,73 @@
 main :: () 
 {
+    #if DEBUG
+    {
+        defer report_memory_leaks();
+    }
+
+    create_window_and_context();
+
+    // ===================================================
+    // @MainLoop:
+    // ===================================================
+
+    while running()
+    {
+        clear_screen();
+        
+        present();
+    }
+}
+
+create_window_and_context :: ()
+{
     #if OS == .WINDOWS 
     {
         SetProcessDPIAware(); // @Note(SetProcessDPIAware)
         timeBeginPeriod(1);   // @Note(timeBeginPeriod)
     }
 
-    #if DEBUG
+    game.window = create_window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, wanted_msaa = MSAA);
+    assert(game.window != null, "Error: Window bad.");
+
+    game.graphics_context = create_graphics_context(game.window);
+    assert(game.graphics_context != null, "Error: Context bad.");
+}
+
+present :: inline ()
+{
+    swap_buffers(game.window, game.graphics_context, VSYNC);
+}
+
+running :: () -> bool
+{
+    update_window_events();
+    // @Pending: Time step.    
+
+    for events_this_frame
     {
-        defer report_memory_leaks();
-    }
-
-    window = create_window(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, wanted_msaa = MSAA);
-    gpu_backend_init();
-
-    // ===================================================
-    // @MainLoop:
-    // ===================================================
-    while !quit 
-    {
-        update_window_events();
-
-        for events_this_frame 
+        #if DEBUG 
         {
-            if it.type == .QUIT 
-            {
-                quit = true;
-            }
-            if it.type == .KEYBOARD 
-            {
-                if it.key_pressed == 0 
-                {
-                    continue;
-                }
-                #if DEBUG 
-                {
-                    if it.key_code == .ESCAPE 
-                    {
-                        quit = true;
-                    }
-                }
-            }
+            game.quit = it.key_code == .ESCAPE;
         }
-        
-        gpu_clear_screen();
-        gpu_swap_buffers(window, VSYNC);
+        game.quit = it.type == .QUIT;
     }
+    
+    return !game.quit;
 }
 
 // ===================================================
 // @Globals:
 // ===================================================
 
-quit: bool;
-window: Window_Type;
+Game :: struct
+{
+    quit: bool;
+    window: Window_Type;
+    graphics_context: Graphics_Context;
+}
+
+game: Game;
 
 // ===================================================
 // @Loads:
@@ -62,8 +76,8 @@ window: Window_Type;
 
 #if OPENGL 
 {
-    #load "gpu_backend_gl.jai";
-    #load "gpu_calls_gl.jai";
+    #load "context_gl.jai";
+    #load "functions_gl.jai";
 } 
 else 
 {
@@ -81,7 +95,7 @@ else
 
 #if OPENGL 
 {
-    // @Note: Hay que importar esto antes que  Por algún motivo.
+    // @Note: Hay que importar esto antes que Windows. Por algún motivo.
     #import "GL"(DUMP_GL_ERRORS = DEBUG, DEFAULT_MSAA = MSAA);
 }
 
@@ -97,27 +111,3 @@ else
         #import "Objective_C/AppKit";
     }
 }
-
-// ===================================================
-// @Notes:
-// ===================================================
-
-// @Note(SetProcessDPIAware):
-
-// DPI (Dots Per Inch): Indican cuántos píxeles hay en una
-// pulgada física de pantalla. Windows en monitores con alto
-// DPI puede llegar a escalar automáticamente tu ventana para 
-// que los elementos con pocos píxeles se continuen viendo.
-// Con esta llamada le comunicas a Windows "I got u, buddy".
-
-// @Note(timeBeginPeriod):
-
-// El Kernel de windows tiene un tick rate con el que actualiza
-// como el cambio de hilos (await/sleep) y la actualización de los
-// timers. Con esta llamada especificas que lo haga con una frecuencia
-// de un milisegundo, en vez de la default. Esto hace que esas 
-// actualizaciones sucedan con más frecuencia. A coste de más consumo
-// de CPU se gana más estabilidad en las partes de la aplicación que
-// dependen de esto.
-//
-// SRC: https://hero.handmade.network/forums/game-discussion/t/8612-what_does_timebeginperiod_actually_do
