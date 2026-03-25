@@ -44,13 +44,25 @@ running :: () -> bool
     update_window_events();
     // @Pending: Time step.    
 
+    Quit :: () #expand
+    {
+        game.quit = true;
+        break;
+    }
+
     for events_this_frame
     {
         #if DEBUG 
         {
-            game.quit = it.key_code == .ESCAPE;
+            if it.key_code == .ESCAPE
+            {
+                Quit();
+            }
         }
-        game.quit = it.type == .QUIT;
+        if it.type == .QUIT
+        {
+            Quit();
+        }
     }
     
     return !game.quit;
@@ -111,3 +123,21 @@ else
         #import "Objective_C/AppKit";
     }
 }
+
+// ===================================================
+// @Notes:
+// ===================================================
+
+// @Note(Windows.SetProcessDPIAware):
+
+// DPI (Dots Per Inch): Indican cuántos píxeles hay en una
+// pulgada física de pantalla. Windows en monitores con alto
+// DPI puede llegar a escalar automáticamente tu ventana para 
+// que los elementos con pocos píxeles se continuen viendo.
+// Con esta llamada le comunicas a Windows "I got u, buddy".
+
+// @Note(Windows.timeBeginPeriod):
+
+// El Kernel de windows tiene un tick rate con el que actualiza
+// como el cambio de hilos (await/sleep) y la actualización de los
+// timers. Con esta llamada especificas que lo haga con una frecuencia
