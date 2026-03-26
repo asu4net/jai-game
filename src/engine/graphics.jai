@@ -1,11 +1,44 @@
-WINDOW_TITLE  :: "Game";
-WINDOW_WIDTH  :: 1280;
-WINDOW_HEIGHT :: 720;
-MSAA          :: 8; // @Note(MSAA)
+Graphics_Application :: struct
+{
+    window: Window_Type;
+    api: Graphics_API;
+    vsync: bool;
+}
+
+create_graphics_application :: (width: s32 = 1920, height: s32 = 1080, title: string = "Window", wanted_msaa: s32 = 8, vsync: bool = true) -> Graphics_Application
+{
+    graphics: Graphics_Application;
+
+    #if OS == .WINDOWS 
+    {
+        SetProcessDPIAware(); // @Note(SetProcessDPIAware)
+        timeBeginPeriod(1);   // @Note(timeBeginPeriod)
+    }
+
+    graphics.vsync = vsync;
+
+    graphics.window = create_window(width, height, title, wanted_msaa = wanted_msaa); // @Note(MSAA)
+    assert(graphics.window != null, "Error: Window bad.");
+
+    graphics.api = create_graphics_api(graphics.window, wanted_msaa);
+    assert(graphics.api != null, "Error: Context bad.");
+
+    return graphics;
+}
+
+present :: inline (graphics: Graphics_Application)
+{
+    swap_buffers(graphics.window, graphics.api, graphics.vsync);
+}
+
+// ===================================================
+// @Constants:
+// ===================================================
+
 OPENGL        :: true;
 OPENGL_MAJOR  :: 4;
 OPENGL_MINOR  :: 1;
-VSYNC         :: true;
+DEFAULT_MSAA  :: 8;
 
 COLOR_WHITE            :: Vector4.{ 1.000, 1.000, 1.000, 1.000 };
 COLOR_WHITE_FADED      :: Vector4.{ 1.000, 1.000, 1.000, 0.000 };
@@ -26,8 +59,35 @@ COLOR_YELLOW           :: Vector4.{ 1.000, 0.920, 0.016, 1.000 };
 COLOR_ORANGE           :: Vector4.{ 0.970, 0.600, 0.110, 1.000 };
 
 // ===================================================
+// @Loads:
+// ===================================================
+
+#if OPENGL
+{
+    #load "graphics/backend/opengl/api.jai";
+}
+else
+{
+    #assert(false);
+}
+
+// ===================================================
 // @Notes:
 // ===================================================
+
+// @Note(Windows.SetProcessDPIAware):
+
+// DPI (Dots Per Inch): Indican cuántos píxeles hay en una
+// pulgada física de pantalla. Windows en monitores con alto
+// DPI puede llegar a escalar automáticamente tu ventana para 
+// que los elementos con pocos píxeles se continuen viendo.
+// Con esta llamada le comunicas a Windows "I got u, buddy".
+
+// @Note(Windows.timeBeginPeriod):
+
+// El Kernel de windows tiene un tick rate con el que actualiza
+// como el cambio de hilos (await/sleep) y la actualización de los
+// timers. Con esta llamada especificas que lo haga con una frecuencia
 
 // @Note(MSAA)
 
