@@ -30,4 +30,8 @@
         #import "Objective_C";
         #import "Objective_C/AppKit";
     }
+    case .LINUX;
+    {
+        #import "X11";
+    }
 }
