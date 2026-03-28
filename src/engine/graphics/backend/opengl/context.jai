@@ -6,6 +6,7 @@
         gl_context_macos: *NSOpenGLContext;
     case .LINUX;
         gl_context_linux: GLXContext;
+        glx_window_linux: GLXWindow;
 } 
 
 is_graphics_context_created :: () -> bool
@@ -14,7 +15,7 @@ is_graphics_context_created :: () -> bool
     {
         case .WINDOWS; return gl_context_win32 != null;
         case .MACOS;   return gl_context_macos != null;
-        case .LINUX;   return gl_context_linux != null;
+        case .LINUX;   return gl_context_linux != null && glx_window_linux != 0;
     } 
 }
 
@@ -45,8 +46,9 @@ create_graphics_context :: (window: Window_Type, msaa: s32 = 0) -> bool
         case .LINUX;
         {
             // @Pending: MSAA.
-            glx_context, _ /* fbconfig */, _ /* chosen_msaa */ := glx_create_context(info.window, OPENGL_MAJOR, OPENGL_MINOR);
+            glx_context, fb_config, _ /* chosen_msaa */ := glx_create_context(info.window, OPENGL_MAJOR, OPENGL_MINOR);
             gl_context_linux = glx_context;
+            glx_window_linux := glXCreateWindow(x_global_display, fb_config, window, null);
         }
     }
 
@@ -84,7 +86,7 @@ swap_buffers :: (window: Window_Type, vsync := true)
         case .LINUX;
         {
             // @Pending: V-Sync.
-            //glXSwapBuffers( ??? , ??? ); @Pending
+            glXSwapBuffers(x_global_display, glx_window_linux);
         }
     } 
 }
