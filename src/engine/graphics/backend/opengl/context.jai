@@ -18,7 +18,7 @@ is_graphics_context_created :: () -> bool
     } 
 }
 
-create_graphics_context_global :: (window: Window_Type, msaa: s32 = 0) -> bool
+create_graphics_context :: (window: Window_Type, msaa: s32 = 0) -> bool
 {
     if !window
     {

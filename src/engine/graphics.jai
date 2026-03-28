@@ -19,7 +19,7 @@ create_graphics_application :: (width: s32 = 1920, height: s32 = 1080, title: st
     graphics.window = create_window(width, height, title, wanted_msaa = wanted_msaa); // @Note(MSAA)
     assert(graphics.window != null, "Error: Window bad.");
 
-    success := create_graphics_context_global(graphics.window, wanted_msaa);
+    success := create_graphics_context(graphics.window, wanted_msaa);
     assert(success, "Error: Context bad.");
 
     return graphics;
