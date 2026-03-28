@@ -8,6 +8,16 @@
         gl_context_linux: GLXContext;
 } 
 
+is_graphics_context_created :: () -> bool
+{
+    #if OS ==
+    {
+        case .WINDOWS; return gl_context_win32 != null;
+        case .MACOS;   return gl_context_macos != null;
+        case .LINUX;   return gl_context_linux != null;
+    } 
+}
+
 create_graphics_context_global :: (window: Window_Type, msaa: s32 = 0) -> bool
 {
     if !window
@@ -15,32 +25,25 @@ create_graphics_context_global :: (window: Window_Type, msaa: s32 = 0) -> bool
         return false; 
     }
     
+    if is_graphics_context_created()
+    {
+        return true;
+    }
+    
     #if OS ==
     {
         case .WINDOWS;
         {
-            if gl_context_win32
-            {
-                return true;
-            }
             hglrc, hdc, chosen_msaa := wgl_create_context(window, null, OPENGL_MAJOR, OPENGL_MINOR, wanted_msaa = msaa);
             gl_context_win32 = hglrc;
         }
         case .MACOS;
         {
-            if gl_context_macos
-            {
-                return true;
-            }
             // @Pending: MSAA.
             gl_context_macos = nsgl_create_context(window, OPENGL_MAJOR, OPENGL_MINOR);
         }
         case .LINUX;
         {
-            if gl_context_linux
-            {
-                return true;
-            }
             // @Pending: MSAA.
             glx_context, _ /* fbconfig */, _ /* chosen_msaa */ := glx_create_context(info.window, OPENGL_MAJOR, OPENGL_MINOR);
             gl_context_linux = glx_context;
@@ -55,17 +58,12 @@ create_graphics_context_global :: (window: Window_Type, msaa: s32 = 0) -> bool
         DumpGLErrors(tag = "context");
     }
     
-    #if OS ==
-    {
-        case .WINDOWS; return gl_context_win32 != null;
-        case .MACOS;   return gl_context_macos != null;
-        case .LINUX;   return gl_context_linux != null;
-    } 
+    return is_graphics_context_created();
 }
 
 swap_buffers :: (window: Window_Type, vsync := true) 
 {   
-    if !window
+    if !window || !is_graphics_context_created()
     {
         return;
     }
@@ -88,7 +86,6 @@ swap_buffers :: (window: Window_Type, vsync := true)
             // @Pending: V-Sync.
             //glXSwapBuffers( ??? , ??? ); @Pending
         }
-
     } 
 }
 
