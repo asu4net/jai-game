@@ -23,24 +23,20 @@ running :: () -> bool
     update_window_events();
     // @Pending: Time step.    
 
-    Quit :: () #expand
-    {
-        game.quit = true;
-        break;
-    }
-
     for events_this_frame
     {
         #if DEBUG 
         {
             if it.key_code == .ESCAPE
             {
-                Quit();
+                game.quit = true;
+                break;
             }
         }
         if it.type == .QUIT
         {
-            Quit();
+            game.quit = true;
+            break;
         }
     }
     
