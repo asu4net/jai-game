@@ -18,42 +18,6 @@ main :: ()
     }
 }
 
-running :: () -> bool
-{
-    update_window_events();
-    // @Pending: Time step.    
-
-    for events_this_frame
-    {
-        #if DEBUG 
-        {
-            if it.key_code == .ESCAPE
-            {
-                game.quit = true;
-                break;
-            }
-        }
-        if it.type == .QUIT
-        {
-            game.quit = true;
-            break;
-        }
-    }
-    
-    return !game.quit;
-}
-
-// ===================================================
-// @Globals:
-// ===================================================
-
-Game :: struct
-{
-    quit: bool;
-}
-
-game: Game;
-
 // ===================================================
 // @Loads:
 // ===================================================

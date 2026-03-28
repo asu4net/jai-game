@@ -1,6 +1,7 @@
 Graphics_Application :: struct
 {
     created: bool;
+    quit: bool;
     window: Window_Type;
     vsync: bool;
 }
@@ -45,6 +46,31 @@ create_graphics_application :: (width: s32 = 1920, height: s32 = 1080, title: st
 present :: inline ()
 {
     swap_buffers(graphics.window, graphics.vsync);
+}
+
+running :: () -> bool
+{
+    update_window_events();
+    // @Pending: Time step.    
+
+    for events_this_frame
+    {
+        #if DEBUG 
+        {
+            if it.key_code == .ESCAPE
+            {
+                graphics.quit = true;
+                break;
+            }
+        }
+        if it.type == .QUIT
+        {
+            graphics.quit = true;
+            break;
+        }
+    }
+    
+    return !graphics.quit;
 }
 
 // ===================================================
