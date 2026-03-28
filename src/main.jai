@@ -5,8 +5,8 @@ main :: ()
         defer report_memory_leaks();
     }
 
-    game.graphics = create_graphics_application(1920, 1080, "Game", wanted_msaa = 8, vsync = true);
-
+    create_graphics_application(1920, 1080, "Game", wanted_msaa = 8, vsync = true);
+    
     // ===================================================
     // @MainLoop:
     // ===================================================

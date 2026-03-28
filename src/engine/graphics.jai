@@ -1,13 +1,19 @@
 Graphics_Application :: struct
 {
+    created: bool;
     window: Window_Type;
     vsync: bool;
 }
 
-create_graphics_application :: (width: s32 = 1920, height: s32 = 1080, title: string = "Window", wanted_msaa: s32 = 8, vsync: bool = true) -> Graphics_Application
-{
-    graphics: Graphics_Application;
+graphics: Graphics_Application;
 
+create_graphics_application :: (width: s32 = 1920, height: s32 = 1080, title: string = "Window", wanted_msaa: s32 = 8, vsync: bool = true) -> bool
+{
+    if graphics.created
+    {
+        return true;
+    }
+    
     #if OS == .WINDOWS 
     {
         SetProcessDPIAware(); // @Note(SetProcessDPIAware)
@@ -17,12 +23,23 @@ create_graphics_application :: (width: s32 = 1920, height: s32 = 1080, title: st
     graphics.vsync = vsync;
 
     graphics.window = create_window(width, height, title, wanted_msaa = wanted_msaa); // @Note(MSAA)
-    assert(graphics.window != null, "Error: Window bad.");
+    
+    if graphics.window == null
+    {
+        assert(false, "Error: Window bad.");
+        return false;
+    }
 
     success := create_graphics_context(graphics.window, wanted_msaa);
-    assert(success, "Error: Context bad.");
+    
+    if !success
+    {
+        assert(false, "Error: Context bad.");
+        return false;
+    }
 
-    return graphics;
+    graphics.created = true; 
+    return true;
 }
 
 present :: inline (graphics: Graphics_Application)
