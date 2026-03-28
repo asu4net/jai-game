@@ -42,7 +42,7 @@ create_graphics_context_global :: (window: Window_Type, msaa: s32 = 0) -> bool
                 return true;
             }
             // @Pending: MSAA.
-            glx_context, _ /* fbconfig */, chosen_msaa := glx_create_context(info.window, OPENGL_MAJOR, OPENGL_MINOR);
+            glx_context, _ /* fbconfig */, _ /* chosen_msaa */ := glx_create_context(info.window, OPENGL_MAJOR, OPENGL_MINOR);
             gl_context_linux = glx_context;
         }
     }
