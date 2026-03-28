@@ -1,7 +1,6 @@
 Graphics_Application :: struct
 {
     window: Window_Type;
-    api: Graphics_API;
     vsync: bool;
 }
 
@@ -20,15 +19,15 @@ create_graphics_application :: (width: s32 = 1920, height: s32 = 1080, title: st
     graphics.window = create_window(width, height, title, wanted_msaa = wanted_msaa); // @Note(MSAA)
     assert(graphics.window != null, "Error: Window bad.");
 
-    graphics.api = create_graphics_api(graphics.window, wanted_msaa);
-    assert(graphics.api != null, "Error: Context bad.");
+    success := create_graphics_context_global(graphics.window, wanted_msaa);
+    assert(success, "Error: Context bad.");
 
     return graphics;
 }
 
 present :: inline (graphics: Graphics_Application)
 {
-    swap_buffers(graphics.window, graphics.api, graphics.vsync);
+    swap_buffers(graphics.window, graphics.vsync);
 }
 
 // ===================================================
@@ -64,7 +63,7 @@ COLOR_ORANGE           :: Vector4.{ 0.970, 0.600, 0.110, 1.000 };
 
 #if OPENGL
 {
-    #load "graphics/backend/opengl/api.jai";
+    #load "graphics/backend/opengl/context.jai";
 }
 else
 {
