@@ -14,7 +14,7 @@ main :: ()
     while running()
     {
         clear_screen();
-        present(game.graphics);
+        present();
     }
 }
 
@@ -54,7 +54,6 @@ running :: () -> bool
 Game :: struct
 {
     quit: bool;
-    graphics: Graphics_Application;
 }
 
 game: Game;

@@ -42,7 +42,7 @@ create_graphics_application :: (width: s32 = 1920, height: s32 = 1080, title: st
     return true;
 }
 
-present :: inline (graphics: Graphics_Application)
+present :: inline ()
 {
     swap_buffers(graphics.window, graphics.vsync);
 }
